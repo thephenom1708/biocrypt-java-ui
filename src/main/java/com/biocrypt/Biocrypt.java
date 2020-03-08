@@ -14,7 +14,7 @@ import java.io.File;
 import java.net.URLEncoder;
 import java.util.Base64;
 
-public class VCSecure extends javax.swing.JFrame {
+public class Biocrypt extends javax.swing.JFrame {
 
     JLabel imageLabel;
     int finalStartX = -1, finalStartY = -1, finalEndX = -1, finalEndY = -1;
@@ -26,7 +26,7 @@ public class VCSecure extends javax.swing.JFrame {
     /**
      * Creates new form VCSecure
      */
-    public VCSecure() {
+    public Biocrypt() {
         initComponents();
 
     }
@@ -334,7 +334,7 @@ public class VCSecure extends javax.swing.JFrame {
             int width = finalEndX - finalStartX;
             BufferedImage cropImg = img.getSubimage(finalStartX, finalStartY, width, height);
 
-            String filename = "/home/thephenom1708/IdeaProjects/BioCrypt/input/input_" + username + ".png";
+            String filename = Url.INPUT_URL + "input_" + username + ".png";
             try {
                 ImageIO.write(img, "PNG", new File(filename));
             } catch (Exception e) {
@@ -449,7 +449,6 @@ public class VCSecure extends javax.swing.JFrame {
     }
 
     public static void main(String args[]) {
-
         if (args.length == 0) {
             Registration registration = new Registration();
             registration.setVisible(true);
@@ -458,7 +457,7 @@ public class VCSecure extends javax.swing.JFrame {
             pin = args[1];
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    new VCSecure().setVisible(true);
+                    new Biocrypt().setVisible(true);
                 }
             });
         }

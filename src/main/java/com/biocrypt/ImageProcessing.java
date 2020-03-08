@@ -1,23 +1,14 @@
 package com.biocrypt;
 
-import com.sun.jdi.ArrayReference;
-
-import java.io.*;
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.lang.reflect.Array;
-import java.util.*;
 import javax.imageio.ImageIO;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URL;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.*;
 
 public class ImageProcessing {
 
@@ -34,65 +25,63 @@ public class ImageProcessing {
     BufferedImage copy;
 
 
-    int basisWhite2x4[][] = {{1, 0, 0, 1},
-                            {1, 0, 0, 1},
-                            {1, 0, 0, 1},
-                            {1, 0, 0, 1}};
+    int[][] basisWhite2x4 = { { 1, 0, 0, 1 },
+            { 1, 0, 0, 1 },
+            { 1, 0, 0, 1 },
+            { 1, 0, 0, 1 } };
 
-    int basisBlack2x4[][] = {{1, 0, 0, 1},
-                             {1, 1, 0, 0},
-                             {0, 1, 1, 0},
-                             {1, 0, 1, 0}};
+    int[][] basisBlack2x4 = { { 1, 0, 0, 1 },
+            { 1, 1, 0, 0 },
+            { 0, 1, 1, 0 },
+            { 1, 0, 1, 0 } };
 
-    int basisWhite2x3[][] = {{1, 0, 0, 1},
-                             {1, 0, 0, 1},
-                             {1, 0, 0, 1}};
+    int[][] basisWhite2x3 = { { 1, 0, 0, 1 },
+            { 1, 0, 0, 1 },
+            { 1, 0, 0, 1 } };
 
-    int basisBlack2x3[][] = {{1, 0, 0, 1},
-                             {0, 1, 1, 0},
-                             {1, 0, 1, 0}};
+    int[][] basisBlack2x3 = { { 1, 0, 0, 1 },
+            { 0, 1, 1, 0 },
+            { 1, 0, 1, 0 } };
 
 
-    int basisWhite3x3[][] = {{0, 0, 1, 1},
-                             {0, 1, 0, 1},
-                             {0, 1, 1, 0}};
+    int[][] basisWhite3x3 = { { 0, 0, 1, 1 },
+            { 0, 1, 0, 1 },
+            { 0, 1, 1, 0 } };
 
-    int basisBlack3x3[][] = {{1, 1, 0, 0},
-                             {1, 0, 1, 0},
-                             {1, 0, 0, 1}};
-    
+    int[][] basisBlack3x3 = { { 1, 1, 0, 0 },
+            { 1, 0, 1, 0 },
+            { 1, 0, 0, 1 } };
 
-    int basisWhite3x4[][] = {{0,0,0,1,1,1},
-                             {0,0,1,0,1,1},
-                             {0,0,1,1,0,1},
-                             {0,0,1,1,1,0}};
-    
-    int basisBlack3x4[][] = {{1,1,1,0,0,0},
-                             {1,1,0,1,0,0},
-                             {1,1,0,0,1,0},
-                             {1,1,0,0,0,1}};
-    
-    
-    int basisWhite4x4[][] = {{0,0,0,1,1,1},
-                             {0,0,1,0,1,1},
-                             {0,0,1,1,0,1},
-                             {0,0,1,1,1,0}};
 
-    int basisBlack4x4[][] = {{1,1,0,0,0,1},
-                             {0,1,0,1,0,1},
-                             {0,1,0,0,1,1},
-                             {0,1,0,1,0,1}};
-    
-    
+    int[][] basisWhite3x4 = { { 0, 0, 0, 1, 1, 1 },
+            { 0, 0, 1, 0, 1, 1 },
+            { 0, 0, 1, 1, 0, 1 },
+            { 0, 0, 1, 1, 1, 0 } };
 
-    int basisWhite2x2[][] = {{1, 0, 0, 1},
-                              {1, 0, 0, 1}};
+    int[][] basisBlack3x4 = { { 1, 1, 1, 0, 0, 0 },
+            { 1, 1, 0, 1, 0, 0 },
+            { 1, 1, 0, 0, 1, 0 },
+            { 1, 1, 0, 0, 0, 1 } };
 
-    int basisBlack2x2[][] = {{1, 0, 0, 1},
-                             {0, 1, 1, 0}};
-    
-    
-    
+
+    int[][] basisWhite4x4 = { { 0, 0, 0, 1, 1, 1 },
+            { 0, 0, 1, 0, 1, 1 },
+            { 0, 0, 1, 1, 0, 1 },
+            { 0, 0, 1, 1, 1, 0 } };
+
+    int[][] basisBlack4x4 = { { 1, 1, 0, 0, 0, 1 },
+            { 0, 1, 0, 1, 0, 1 },
+            { 0, 1, 0, 0, 1, 1 },
+            { 0, 1, 0, 1, 0, 1 } };
+
+
+    int[][] basisWhite2x2 = { { 1, 0, 0, 1 },
+            { 1, 0, 0, 1 } };
+
+    int[][] basisBlack2x2 = { { 1, 0, 0, 1 },
+            { 0, 1, 1, 0 } };
+
+
     // ImageProcessing class
     public ImageProcessing(BufferedImage input, int startX, int startY, int endX, int endY, String username) {
         // input image
@@ -110,7 +99,7 @@ public class ImageProcessing {
         width = Math.abs(startX - endX);
         // height of share
         height = Math.abs(startY - endY);
-        
+
         // make width even
         if (width % 2 != 0) {
             width++;
@@ -130,7 +119,7 @@ public class ImageProcessing {
         permut.add(1);
         permut.add(2);
         permut.add(3);
-        BLACK=blackColor.getRGB();
+        BLACK = blackColor.getRGB();
         System.out.println(startX + "   " + startY + " , " + endX + "   " + endY + "   " + height + "   " + width);
         makeItBinary();
     }
@@ -195,53 +184,49 @@ public class ImageProcessing {
     }
 
     // generate black block in share
-    private void generateBlackBlock(int blackMat[][], int row, int col) {
+    private void generateBlackBlock(int[][] blackMat, int row, int col) {
         Collections.shuffle(permut);
-        ArrayList<Integer> rowSuffler=new ArrayList<>();
-        for(int i=0;i<blackMat.length;i++)
-        {
+        ArrayList<Integer> rowSuffler = new ArrayList<>();
+        for (int i = 0; i < blackMat.length; i++) {
             rowSuffler.add(i);
         }
         Collections.shuffle(rowSuffler);
         for (int i = 1; i < blackMat.length; i++) {
-            shares.get(i).setRGB(col, row,blackMat[rowSuffler.get(i)][permut.get(0)]*BLACK);
-            shares.get(i).setRGB(col + 1,row,blackMat[rowSuffler.get(i)][permut.get(1)]*BLACK);
-            shares.get(i).setRGB(col,  row + 1,blackMat[rowSuffler.get(i)][permut.get(2)]*BLACK);
-            shares.get(i).setRGB(col + 1, row + 1, blackMat[rowSuffler.get(i)][permut.get(3)]*BLACK);
+            shares.get(i).setRGB(col, row, blackMat[rowSuffler.get(i)][permut.get(0)] * BLACK);
+            shares.get(i).setRGB(col + 1, row, blackMat[rowSuffler.get(i)][permut.get(1)] * BLACK);
+            shares.get(i).setRGB(col, row + 1, blackMat[rowSuffler.get(i)][permut.get(2)] * BLACK);
+            shares.get(i).setRGB(col + 1, row + 1, blackMat[rowSuffler.get(i)][permut.get(3)] * BLACK);
         }
-         shares.get(0).setRGB(startX + col, startY + row, blackMat[rowSuffler.get(0)][permut.get(0)]*BLACK);
-         shares.get(0).setRGB(startX + col + 1, startY + row,blackMat[rowSuffler.get(0)][permut.get(1)]*BLACK);
-         shares.get(0).setRGB(startX + col, startY + row + 1,blackMat[rowSuffler.get(0)][permut.get(2)]*BLACK);
-         shares.get(0).setRGB(startX + col + 1, startY + row + 1,blackMat[rowSuffler.get(0)][permut.get(3)]*BLACK);
-        
+        shares.get(0).setRGB(startX + col, startY + row, blackMat[rowSuffler.get(0)][permut.get(0)] * BLACK);
+        shares.get(0).setRGB(startX + col + 1, startY + row, blackMat[rowSuffler.get(0)][permut.get(1)] * BLACK);
+        shares.get(0).setRGB(startX + col, startY + row + 1, blackMat[rowSuffler.get(0)][permut.get(2)] * BLACK);
+        shares.get(0).setRGB(startX + col + 1, startY + row + 1, blackMat[rowSuffler.get(0)][permut.get(3)] * BLACK);
+
     }
 
     // generate white block in shares
-    private void generateWhiteBlock(int whiteMat[][], int row, int col) {
+    private void generateWhiteBlock(int[][] whiteMat, int row, int col) {
         Collections.shuffle(permut);
-        
+
         for (int i = 1; i < whiteMat.length; i++) {
-            shares.get(i).setRGB(col,row,whiteMat[i][permut.get(0)]*BLACK);
-            shares.get(i).setRGB(col + 1,row,whiteMat[i][permut.get(1)]*BLACK);
-            shares.get(i).setRGB(col,row + 1,whiteMat[i][permut.get(2)]*BLACK);
-            shares.get(i).setRGB(col + 1,row + 1, whiteMat[i][permut.get(3)]*BLACK);
+            shares.get(i).setRGB(col, row, whiteMat[i][permut.get(0)] * BLACK);
+            shares.get(i).setRGB(col + 1, row, whiteMat[i][permut.get(1)] * BLACK);
+            shares.get(i).setRGB(col, row + 1, whiteMat[i][permut.get(2)] * BLACK);
+            shares.get(i).setRGB(col + 1, row + 1, whiteMat[i][permut.get(3)] * BLACK);
         }
-         shares.get(0).setRGB(startX + col, startY + row, whiteMat[0][permut.get(0)]*BLACK);
-         shares.get(0).setRGB(startX + col + 1, startY + row,whiteMat[0][permut.get(1)]*BLACK);
-         shares.get(0).setRGB(startX + col, startY + row + 1,whiteMat[0][permut.get(2)]*BLACK);
-         shares.get(0).setRGB(startX + col + 1, startY + row + 1,whiteMat[0][permut.get(3)]*BLACK);
+        shares.get(0).setRGB(startX + col, startY + row, whiteMat[0][permut.get(0)] * BLACK);
+        shares.get(0).setRGB(startX + col + 1, startY + row, whiteMat[0][permut.get(1)] * BLACK);
+        shares.get(0).setRGB(startX + col, startY + row + 1, whiteMat[0][permut.get(2)] * BLACK);
+        shares.get(0).setRGB(startX + col + 1, startY + row + 1, whiteMat[0][permut.get(3)] * BLACK);
     }
 
-    
+
     // check whether the pixel is at boundary or not
     private boolean isAtBoundary(int i, int j) {
-        if (i == startY || j == startX || i == endY - 2 || j == endX - 2) {
-            return true;
-        }
-        return false;
+        return i == startY || j == startX || i == endY - 2 || j == endX - 2;
     }
 
-     // check whether the pixel is diagonally black or not
+    // check whether the pixel is diagonally black or not
     private boolean isDiagonallyBlack(int i, int j) {
         Color c1 = new Color(input.getRGB(j, i));
         Color c2 = new Color(input.getRGB(j + 1, i));
@@ -250,18 +235,15 @@ public class ImageProcessing {
         if (c4.getRed() == 255 && c1.getRed() == 255) {
             return true;
         }
-        if (c2.getRed() == 255 && c3.getRed() == 255) {
-            return true;
-        }
-        return false;
+        return c2.getRed() == 255 && c3.getRed() == 255;
     }
-    
+
     // count neigbour black pixels of block
     private int neighborBlackPixelOfBlock(int h, int w) {
-        if (h - 1 < 0||h+2>=input.getHeight()) {
+        if (h - 1 < 0 || h + 2 >= input.getHeight()) {
             return 0;
         }
-        if (w + 2 >= input.getWidth()||w-1<0) {
+        if (w + 2 >= input.getWidth() || w - 1 < 0) {
             return 0;
         }
 
@@ -294,13 +276,13 @@ public class ImageProcessing {
         return count;
     }
 
-    // count negihbor black pixel of pixel
+    // count neighbour black pixel of pixel
     private int neighborBlackPixelsOfPixel(int h, int w) {
 
-        if (h - 1 < 0||h+1>input.getHeight()) {
+        if (h - 1 < 0 || h + 1 > input.getHeight()) {
             return 0;
         }
-        if (w + 1 >= input.getWidth()||w-1<0) {
+        if (w + 1 >= input.getWidth() || w - 1 < 0) {
             return 0;
         }
 
@@ -358,11 +340,11 @@ public class ImageProcessing {
     // generate share method take two basis matrices as input one for black box and one for white box
     // input: Basis matrices for white and black pixel
     // Output: Shares for the secret images
-    public void generateShares(int whiteMat[][], int blackMat[][]) {
+    public void generateShares(int[][] whiteMat, int[][] blackMat) {
         for (int i = 1; i < whiteMat.length; i++) {
             shares.add(new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR));
         }
-        
+
         for (int i = 0; i < height; i += 2) {
             for (int j = 0; j < width; j += 2) {
 
@@ -403,130 +385,119 @@ public class ImageProcessing {
             }
         }
         try {
-                ArrayList <String> serverList = new ArrayList<String>(Arrays.asList("192.168.43.59", "192.168.43.188", "192.168.43.216"));
-                String url = "http://127.0.0.1:8000/apitest/testing/";
-                String param = "";
-                String response = "";
+            List<String> serverList = Url.nodes;
+            String url;
+            String param;
+            String response = "";
             //write all shares now
-                for (int i = 0; i < shares.size(); i++)
-                {
-                    String fileName = "/home/thephenom1708/IdeaProjects/BioCrypt/shares/share" + (i+1) + ".png";
-                    ImageIO.write(shares.get(i), "PNG", new File(fileName));
+            for (int i = 0; i < shares.size(); i++) {
+                String fileName = Url.SHARE_URL + "share" + (i + 1) + ".png";
+                ImageIO.write(shares.get(i), "PNG", new File(fileName));
 
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    ImageIO.write(shares.get(i), "PNG", outputStream);
-                    //byte[] bytes = outputStream.toByteArray();
-                    String encodedImage = Base64.getEncoder().encodeToString(outputStream.toByteArray());    
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                ImageIO.write(shares.get(i), "PNG", outputStream);
+                //byte[] bytes = outputStream.toByteArray();
+                String encodedImage = Base64.getEncoder().encodeToString(outputStream.toByteArray());
 
 
-                    url = "http://" + serverList.get(i) + ":8080/apitest/testing/";
-                    param = "share_data=" + URLEncoder.encode(encodedImage, "UTF-8") + "&" + "username=" + username;
-                    System.out.println("Sending to " + serverList.get(i));
-                    HttpSendData send1=new HttpSendData(url, param);
-                    try
-                    {
-                        response = send1.sendPOST();
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                    System.out.println(response.toString());
+                url = "http://" + serverList.get(i) + ":" + Url.PORT + Url.CREATE_SHARE_URL;
+                param = "share_data=" + URLEncoder.encode(encodedImage, StandardCharsets.UTF_8) + "&" + "username=" + username;
+                System.out.println("Sending to " + serverList.get(i));
+                HttpSendData send1 = new HttpSendData(url, param);
+                try {
+                    response = send1.sendPOST();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                System.out.println(response);
+            }
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
-    
-    
-    
+
+
     // create a complete black block
-    private void createBlackBlock(int i,int j)
-    {
-        Color show=new Color(0,0,0,0);
-        input.setRGB(startX+j,startY+i,show.getRGB());
-        input.setRGB(startX+j+1,startY+i,show.getRGB());
-        input.setRGB(startX+j,startY+i+1,show.getRGB());
-        input.setRGB(startX+j+1,startY+i+1,show.getRGB());
-      
+    private void createBlackBlock(int i, int j) {
+        Color show = new Color(0, 0, 0, 0);
+        input.setRGB(startX + j, startY + i, show.getRGB());
+        input.setRGB(startX + j + 1, startY + i, show.getRGB());
+        input.setRGB(startX + j, startY + i + 1, show.getRGB());
+        input.setRGB(startX + j + 1, startY + i + 1, show.getRGB());
+
     }
-    
-     // create a complete white block
-    private void createWhiteBlock(int i,int j)
-    {
-        Color show=new Color(255,255,255,255);
-        input.setRGB(startX+j,startY+i,show.getRGB());
-        input.setRGB(startX+j+1,startY+i,show.getRGB());
-        input.setRGB(startX+j,startY+i+1,show.getRGB());
-        input.setRGB(startX+j+1,startY+i+1,show.getRGB());
+
+    // create a complete white block
+    private void createWhiteBlock(int i, int j) {
+        Color show = new Color(255, 255, 255, 255);
+        input.setRGB(startX + j, startY + i, show.getRGB());
+        input.setRGB(startX + j + 1, startY + i, show.getRGB());
+        input.setRGB(startX + j, startY + i + 1, show.getRGB());
+        input.setRGB(startX + j + 1, startY + i + 1, show.getRGB());
     }
-    
-    
-    
+
+
     // count number of black pixels in 2*3 block 
     private int countNumberOfBlackPixelInExtendedBlock(int row, int col) {
         int count = 0;
-        
-        if(row+2>=endY)
+
+        if (row + 2 >= endY)
             return 0;
-        if(col+3>=endX)
+        if (col + 3 >= endX)
             return 0;
-        
+
         // same pixel
-        for(int i=0;i<2;i++)
-        {
-            for(int j=0;j<3;j++)
-            {
-                Color temp = new Color(input.getRGB(col+j, row+i));
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 3; j++) {
+                Color temp = new Color(input.getRGB(col + j, row + i));
                 count += temp.getRed() / 255;
             }
         }
         count = 6 - count;
         return count;
     }
-    
-    
+
+
     // doPreprocessing 
-    void doPreprocessing()
-    {
-         copy=new BufferedImage(input.getWidth(),input.getHeight(),BufferedImage.TYPE_4BYTE_ABGR);
-         for (int i = 0; i < input.getHeight(); i++) {
-                for (int j = 0; j < input.getWidth(); j++) {
-                    Color c = new Color(input.getRGB(j, i));
-                    Color temp = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
-                    copy.setRGB(j, i, temp.getRGB());
-                }
-         }
-         for (int i = 0; i < height; i += 2) {
+    void doPreprocessing() {
+        copy = new BufferedImage(input.getWidth(), input.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+        for (int i = 0; i < input.getHeight(); i++) {
+            for (int j = 0; j < input.getWidth(); j++) {
+                Color c = new Color(input.getRGB(j, i));
+                Color temp = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
+                copy.setRGB(j, i, temp.getRGB());
+            }
+        }
+        for (int i = 0; i < height; i += 2) {
             for (int j = 0; j < width; j += 2) {
 
                 switch (countNumberOfBlackPixelInBlock(startY + i, startX + j)) {
                     case 0:
                     case 1:
-                        createWhiteBlock(i,j);
+                        createWhiteBlock(i, j);
                         break;
                     case 2:
                         if (isAtBoundary(i, j)) {
                             Random r = new Random();
                             int k = Math.abs(r.nextInt() % 2);
                             if (k == 0) {
-                                  createBlackBlock(i, j);
+                                createBlackBlock(i, j);
                             } else {
-                                createWhiteBlock(i,j);
+                                createWhiteBlock(i, j);
                             }
                         } else {
                             if (isDiagonallyBlack(i, j)) {
                                 if (neighborBlackOfBlackPixelsInBlock(i, j) > 8) {
-                                      createBlackBlock(i, j);
+                                    createBlackBlock(i, j);
                                 } else {
-                                    createWhiteBlock(i,j);
+                                    createWhiteBlock(i, j);
                                 }
                             } else {
                                 if (neighborBlackPixelOfBlock(i, j) > 4) {
-                                      createBlackBlock(i, j);
+                                    createBlackBlock(i, j);
                                 } else {
-                                    createWhiteBlock(i,j);
+                                    createWhiteBlock(i, j);
                                 }
                             }
                         }
@@ -537,84 +508,69 @@ public class ImageProcessing {
                 }
             }
         }
-         
+
         copy.setRGB(0, 0, startX);
         copy.setRGB(input.getWidth() - 1, 0, startY);
         shares.remove(0);
         shares.add(copy);
     }
-    
+
     // generate extended black block
-     private void generateExtendedBlackBlock(int blackMat[][], int row, int col) {
-         if(col+3>=width||row+2>=height)
-            return; 
-         
-        ArrayList<Integer> rowSuffler=new ArrayList<>();
-        for(int i=0;i<blackMat.length;i++)
-        {
+    private void generateExtendedBlackBlock(int[][] blackMat, int row, int col) {
+        if (col + 3 >= width || row + 2 >= height)
+            return;
+
+        ArrayList<Integer> rowSuffler = new ArrayList<>();
+        for (int i = 0; i < blackMat.length; i++) {
             rowSuffler.add(i);
         }
-        permut=new ArrayList<>();
-        for(int i=0;i<6;i++)
-        {
+        permut = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
             permut.add(i);
         }
         Collections.shuffle(permut);
         Collections.shuffle(rowSuffler);
-        
-        for (int i = 0; i < blackMat.length; i++)
-        {
-            int count=0;
-            for(int j=0;j<2;j++)
-            {
-                for(int k=0;k<3;k++)
-                {
-                    if(i==0)
-                    {
-                        shares.get(0).setRGB(startX + col+k, startY + row+j, blackMat[rowSuffler.get(i)][permut.get(count++)]*BLACK);
-                    }
-                    else
-                    {
-                        shares.get(i).setRGB(col+k, row+j,blackMat[rowSuffler.get(i)][permut.get(count++)]*BLACK);
+
+        for (int i = 0; i < blackMat.length; i++) {
+            int count = 0;
+            for (int j = 0; j < 2; j++) {
+                for (int k = 0; k < 3; k++) {
+                    if (i == 0) {
+                        shares.get(0).setRGB(startX + col + k, startY + row + j, blackMat[rowSuffler.get(i)][permut.get(count++)] * BLACK);
+                    } else {
+                        shares.get(i).setRGB(col + k, row + j, blackMat[rowSuffler.get(i)][permut.get(count++)] * BLACK);
                     }
                 }
             }
         }
     }
 
-     // generate extended white block
-    private void generateExtendedWhiteBlock(int whiteMat[][], int row, int col) {
-       
-        if(col+3>=width||row+2>=height)
+    // generate extended white block
+    private void generateExtendedWhiteBlock(int[][] whiteMat, int row, int col) {
+
+        if (col + 3 >= width || row + 2 >= height)
             return;
-        
-        ArrayList<Integer> rowSuffler=new ArrayList<>();
-        for(int i=0;i<whiteMat.length;i++)
-        {
+
+        ArrayList<Integer> rowSuffler = new ArrayList<>();
+        for (int i = 0; i < whiteMat.length; i++) {
             rowSuffler.add(i);
         }
-        permut=new ArrayList<>();
-        for(int i=0;i<6;i++)
-        {
+        permut = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
             permut.add(i);
         }
         Collections.shuffle(permut);
         Collections.shuffle(rowSuffler);
-        
-        
+
+
         for (int i = 0; i < whiteMat.length; i++) {
-            int count=0;
-            for(int j=0;j<2;j++)
-            {
-                for(int k=0;k<3;k++)
-                {
-                    if(i==0)
-                    {
-                        shares.get(0).setRGB(startX + col+k, startY + row+j, whiteMat[rowSuffler.get(i)][permut.get(count++)]*BLACK);
-                    }
-                    else
-                    {
-                        shares.get(i).setRGB(col+k, row+j,whiteMat[rowSuffler.get(i)][permut.get(count++)]*BLACK);
+            int count = 0;
+            for (int j = 0; j < 2; j++) {
+                for (int k = 0; k < 3; k++) {
+                    if (i == 0) {
+                        shares.get(0).setRGB(startX + col + k, startY + row + j, whiteMat[rowSuffler.get(i)][permut.get(count++)] * BLACK);
+                    } else {
+                        shares.get(i).setRGB(col + k, row + j, whiteMat[rowSuffler.get(i)][permut.get(count++)] * BLACK);
                     }
                 }
             }
@@ -622,14 +578,13 @@ public class ImageProcessing {
     }
 
     // generate shares after preprocessing of 2*2 blocks
-    public void generateShareAfterPreProcessing(int whiteMat[][],int blackMat[][])
-    {  
+    public void generateShareAfterPreProcessing(int[][] whiteMat, int[][] blackMat) {
         doPreprocessing();
         for (int i = 1; i < whiteMat.length; i++) {
             shares.add(new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR));
         }
-        
-        for (int i = 0; i < height; i +=2) {
+
+        for (int i = 0; i < height; i += 2) {
             for (int j = 0; j < width; j += 3) {
 
                 switch (countNumberOfBlackPixelInExtendedBlock(startY + i, startX + j)) {
@@ -657,43 +612,31 @@ public class ImageProcessing {
             System.out.println(e.getMessage());
         }
     }
-    
-   
-   // generate k out on n shares
+
+
+    // generate k out on n shares
     public boolean generateKoutOfNShares(int k, int n) {
-        
-        if(k==2&&n==2)
-        {
+
+        if (k == 2 && n == 2) {
             generateShares(basisWhite2x2, basisBlack2x2);
-        }
-        else if(k==2&&n==3)
-        {
-             generateShares(basisWhite2x3, basisBlack2x3);
-        }
-        else if(k==2&&n==4)
-        {
-             generateShares(basisWhite2x4, basisBlack2x4);
-        }
-        else if(k==3&&n==3)
-        {
-             generateShares(basisWhite3x3, basisBlack3x3);
-        }
-        else if(k==3&&n==4)
-        {
-             generateShareAfterPreProcessing(basisWhite3x4, basisBlack3x4);
-             
-        }
-        else if(k==4&&n==4)
-        {
-            
-             generateShareAfterPreProcessing(basisWhite4x4, basisBlack4x4);
+        } else if (k == 2 && n == 3) {
+            generateShares(basisWhite2x3, basisBlack2x3);
+        } else if (k == 2 && n == 4) {
+            generateShares(basisWhite2x4, basisBlack2x4);
+        } else if (k == 3 && n == 3) {
+            generateShares(basisWhite3x3, basisBlack3x3);
+        } else if (k == 3 && n == 4) {
+            generateShareAfterPreProcessing(basisWhite3x4, basisBlack3x4);
+
+        } else if (k == 4 && n == 4) {
+
+            generateShareAfterPreProcessing(basisWhite4x4, basisBlack4x4);
         }
         return true;
     }
 
 
-
-    public void generateShares_direct(int whiteMat[][], int blackMat[][]) {
+    public void generateShares_direct(int[][] whiteMat, int[][] blackMat) {
         for (int i = 1; i < whiteMat.length; i++) {
             shares.add(new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR));
         }
@@ -753,7 +696,7 @@ public class ImageProcessing {
         } else if (k == 3 && n == 3) {
             generateShares_direct(basisWhite3x3, basisBlack3x3);
         }
-        System.out.println("ssize: " + shares.size());
+        System.out.println("size: " + shares.size());
         return shares;
     }
 
