@@ -14,19 +14,19 @@ public class Test {
 
         FingerprintTemplate probe = new FingerprintTemplate(
                 new FingerprintImage()
-                        .dpi(500)
+                        .dpi(150)
                         .decode(probeImage));
 
         FingerprintTemplate candidate = new FingerprintTemplate(
                 new FingerprintImage()
-                        .dpi(500)
+                        .dpi(150)
                         .decode(candidateImage));
 
         double score = new FingerprintMatcher()
                 .index(probe)
                 .match(candidate);
 
-        double threshold = 30;
+        double threshold = 40;
         boolean matches = score >= threshold;
         System.out.println(matches + " " + score);
         return matches;

@@ -46,7 +46,8 @@ public class NGenerator {
                 cntPrime++;
             }
         }
-        int res = 1 + (Math.abs(cntPrime - cntComp) % 4);
+        int res = 2 + (Math.abs(cntPrime - cntComp) % 7);
+        System.out.println("N: " + res);
         return res;
     }
 }

@@ -11,7 +11,7 @@ public class VC {
     int n , kVal = 2;
     ArrayList <File> files;
     ArrayList<BufferedImage> shares;
-    String username = "";
+    String username;
 
     public VC(int startX, int startY, int endX, int endY, int n, BufferedImage img, String username)
     {
@@ -21,13 +21,12 @@ public class VC {
         this.finalStartY = startY;
         this.img = img;
         this.n = n;
-        shares = new ArrayList<BufferedImage>();
+        shares = new ArrayList<>();
         this.username = username;
     }
 
     public BufferedImage getOutputImg()
     {
-        System.out.println("Here");
         ImageProcessing imageProcessing = new ImageProcessing(img, finalStartX, finalStartY, finalEndX, finalEndY, username);
         shares = imageProcessing.generateKoutOfNShares_direct(kVal, n);
 

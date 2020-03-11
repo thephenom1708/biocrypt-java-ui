@@ -12,7 +12,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+
 
 public class Biocrypt extends javax.swing.JFrame {
 
@@ -22,10 +24,8 @@ public class Biocrypt extends javax.swing.JFrame {
     BufferedImage img;
 
     public static String pin, username;
+    public static final int K = 2;
 
-    /**
-     * Creates new form VCSecure
-     */
     public Biocrypt() {
         initComponents();
 
@@ -33,7 +33,6 @@ public class Biocrypt extends javax.swing.JFrame {
 
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         setTitle("BioCrypt");
@@ -213,12 +212,12 @@ public class Biocrypt extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
     int startX, startY, endX, endY;
     boolean isDragging = false;
 
-    private void loadImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadImageActionPerformed
+    private void loadImageActionPerformed(java.awt.event.ActionEvent evt) {
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & PNG Images", "jpg", "png");
         chooser.setFileFilter(filter);
@@ -245,6 +244,8 @@ public class Biocrypt extends javax.swing.JFrame {
                         g.drawRect(startX, startY, w, h);
                     }
                 };
+                System.out.println(0 + " -- " + 0);
+                System.out.println(img.getWidth() + " -- " + img.getHeight());
                 imageLabel.setBounds(0, 0, img.getWidth(), img.getHeight());
                 imageLabel.setIcon(icon);
                 imageLabel.setAlignmentX(JLabel.CENTER);
@@ -287,7 +288,7 @@ public class Biocrypt extends javax.swing.JFrame {
                     @Override
                     public void mouseDragged(MouseEvent e) {
 
-                        if (isDragging == true) {
+                        if (isDragging) {
 
                             endX = e.getX();
                             endY = e.getY();
@@ -309,12 +310,13 @@ public class Biocrypt extends javax.swing.JFrame {
                 imagePanel.repaint();
 
             } catch (Exception e) {
+                e.printStackTrace();
             }
 
         }
 
 
-    }//event_loadImageActionPerformed
+    }
 
     boolean isSelected = false;
 
@@ -328,13 +330,14 @@ public class Biocrypt extends javax.swing.JFrame {
             finalEndY = endY;
             isSelected = true;
             System.out.println(startX + "   " + startY);
+            System.out.println(endX + "   " + endY);
             JOptionPane.showMessageDialog(this, "Region selected successfully.");
 
             int height = finalEndY - finalStartY;
             int width = finalEndX - finalStartX;
             BufferedImage cropImg = img.getSubimage(finalStartX, finalStartY, width, height);
 
-            String filename = Url.INPUT_URL + "input_" + username + ".png";
+            String filename = Url.INPUT_PATH + "input_" + username + ".png";
             try {
                 ImageIO.write(img, "PNG", new File(filename));
             } catch (Exception e) {
@@ -342,16 +345,16 @@ public class Biocrypt extends javax.swing.JFrame {
             }
 
             try {
-                String coordinates = String.valueOf(finalStartX) + "," + String.valueOf(finalStartY) + ","
-                        + String.valueOf(finalEndX) + "," + String.valueOf(finalEndY);
+                String coordinates = finalStartX + "," + finalStartY + ","
+                        + finalEndX + "," + finalEndY;
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 ImageIO.write(img, "PNG", outputStream);
                 String encodedImage = Base64.getEncoder().encodeToString(outputStream.toByteArray());
 
-                String url = "http://192.168.43.216:8080/registration/uploadFingerprint/";
-                String param = "fingerprint=" + URLEncoder.encode(encodedImage, "UTF-8") + "&" + "username=" + username + "&"
+                String url = Url.UPLOAD_FINGERPRINT_URL;
+                String param = "fingerprint=" + URLEncoder.encode(encodedImage, StandardCharsets.UTF_8) + "&" + "username=" + username + "&"
                         + "coordinates=" + coordinates;
-                String response = new String();
+                String response = "";
                 HttpSendData send1 = new HttpSendData(url, param);
                 try {
                     response = send1.sendPOST();
@@ -362,7 +365,7 @@ public class Biocrypt extends javax.swing.JFrame {
                 e.printStackTrace();
             }
         }
-    }//GEN-LAST:event_selectRegionActionPerformed
+    }
 
     private void clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearActionPerformed
         startX = 0;
@@ -377,7 +380,7 @@ public class Biocrypt extends javax.swing.JFrame {
         imagePanel.remove(imageLabel);
         imagePanel.revalidate();
         imagePanel.repaint();
-    }//GEN-LAST:event_clearActionPerformed
+    }
 
     private void generateSharesActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_generateSharesActionPerformed
 
@@ -388,15 +391,14 @@ public class Biocrypt extends javax.swing.JFrame {
             NGenerator nGenerator = new NGenerator();
             int n = nGenerator.getValueOfN(pin);
             System.out.println("N: " + n + " " + pin);
-            int k = 2;
+            int k = K;
 
             boolean sharesGenerated = false;
             if (k <= n) {
-                System.out.println("here");
                 imageProcessing.generateKoutOfNShares(k, n);
                 sharesGenerated = true;
 
-            } else if (k > n) {
+            } else {
                 JOptionPane.showMessageDialog(this, "K must me smaller than equal to n.", "Error", 0);
             }
 
@@ -448,7 +450,7 @@ public class Biocrypt extends javax.swing.JFrame {
         //loginPage.setVisible(true);
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         if (args.length == 0) {
             Registration registration = new Registration();
             registration.setVisible(true);

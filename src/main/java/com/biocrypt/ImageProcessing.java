@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -42,6 +43,14 @@ public class ImageProcessing {
     int[][] basisBlack2x3 = { { 1, 0, 0, 1 },
             { 0, 1, 1, 0 },
             { 1, 0, 1, 0 } };
+
+//    int[][] basisWhite2x3 = { { 1, 0, 0, 0 },
+//            { 0, 0, 0, 0 },
+//            { 0, 1, 0, 0 } };
+//
+//    int[][] basisBlack2x3 = { { 1, 1, 1, 1 },
+//            { 1, 0, 0, 0 },
+//            { 1, 1, 1, 1 } };
 
 
     int[][] basisWhite3x3 = { { 0, 0, 1, 1 },
@@ -340,7 +349,7 @@ public class ImageProcessing {
     // generate share method take two basis matrices as input one for black box and one for white box
     // input: Basis matrices for white and black pixel
     // Output: Shares for the secret images
-    public void generateShares(int[][] whiteMat, int[][] blackMat) {
+    public void generateShares(int[][] whiteMat, int[][] blackMat, int n) {
         for (int i = 1; i < whiteMat.length; i++) {
             shares.add(new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR));
         }
@@ -386,23 +395,32 @@ public class ImageProcessing {
         }
         try {
             List<String> serverList = Url.nodes;
+            int nodeCount = serverList.size();
             String url;
             String param;
             String response = "";
-            //write all shares now
-            for (int i = 0; i < shares.size(); i++) {
-                String fileName = Url.SHARE_URL + "share" + (i + 1) + ".png";
-                ImageIO.write(shares.get(i), "PNG", new File(fileName));
+            int serverIndex = 0;
+            int shareIndex;
+            for (int i = 0; i < n; i++) {
+
+                if(i >= nodeCount && i % nodeCount == 0)
+                    shareIndex = 1;
+                else
+                    shareIndex = i % nodeCount;
+
+
+                String fileName = Url.SHARE_PATH + "share" + (i + 1) + ".png";
+                ImageIO.write(shares.get(shareIndex), "PNG", new File(fileName));
 
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                ImageIO.write(shares.get(i), "PNG", outputStream);
+                ImageIO.write(shares.get(shareIndex), "PNG", outputStream);
                 //byte[] bytes = outputStream.toByteArray();
                 String encodedImage = Base64.getEncoder().encodeToString(outputStream.toByteArray());
 
+                url = "http://" + serverList.get(i % nodeCount) + ":" + Url.PORT + Url.CREATE_SHARE_URL;
+                param = "share_number=" + (i + 1) + "&" + "share_data=" + URLEncoder.encode(encodedImage, StandardCharsets.UTF_8) + "&" + "username=" + username;
+                System.out.println("Sending to " + serverList.get(i % nodeCount));
 
-                url = "http://" + serverList.get(i) + ":" + Url.PORT + Url.CREATE_SHARE_URL;
-                param = "share_data=" + URLEncoder.encode(encodedImage, StandardCharsets.UTF_8) + "&" + "username=" + username;
-                System.out.println("Sending to " + serverList.get(i));
                 HttpSendData send1 = new HttpSendData(url, param);
                 try {
                     response = send1.sendPOST();
@@ -410,9 +428,13 @@ public class ImageProcessing {
                     e.printStackTrace();
                 }
                 System.out.println(response);
-            }
 
-        } catch (Exception e) {
+                serverIndex++;
+                if(serverIndex == nodeCount)
+                    serverIndex = 0;
+            }
+        }
+        catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -578,7 +600,7 @@ public class ImageProcessing {
     }
 
     // generate shares after preprocessing of 2*2 blocks
-    public void generateShareAfterPreProcessing(int[][] whiteMat, int[][] blackMat) {
+    public void generateShareAfterPreProcessing(int[][] whiteMat, int[][] blackMat) throws IOException {
         doPreprocessing();
         for (int i = 1; i < whiteMat.length; i++) {
             shares.add(new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR));
@@ -603,9 +625,38 @@ public class ImageProcessing {
         }
         try {
             //write all shares now
+            List<String> serverList = Url.nodes;
+            int nodeCount = serverList.size();
+            String url;
+            String param;
+            String response = "";
+            int serverIndex = 0;
+
             for (int i = 0; i < shares.size(); i++) {
-                String fileName = "G:\\Btech_Project\\Visual-Cryptography-master\\VCSecure\\shares\\Share" + (i + 1) + ".png";
+                String fileName = Url.SHARE_PATH + "share" + (i + 1) + ".png";
                 ImageIO.write(shares.get(i), "PNG", new File(fileName));
+
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                ImageIO.write(shares.get(i), "PNG", outputStream);
+                //byte[] bytes = outputStream.toByteArray();
+                String encodedImage = Base64.getEncoder().encodeToString(outputStream.toByteArray());
+
+
+                url = "http://" + serverList.get(i) + ":" + Url.PORT + Url.CREATE_SHARE_URL;
+                param = "share_number=" + (i + 1) + "&" + "share_data=" + URLEncoder.encode(encodedImage, StandardCharsets.UTF_8) + "&" + "username=" + username;
+                System.out.println("Sending to " + serverList.get(i));
+
+                HttpSendData send1 = new HttpSendData(url, param);
+                try {
+                    response = send1.sendPOST();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                System.out.println(response);
+
+                serverIndex++;
+                if (serverIndex == nodeCount)
+                    serverIndex = 0;
             }
 
         } catch (Exception e) {
@@ -618,19 +669,21 @@ public class ImageProcessing {
     public boolean generateKoutOfNShares(int k, int n) {
 
         if (k == 2 && n == 2) {
-            generateShares(basisWhite2x2, basisBlack2x2);
+            generateShares(basisWhite2x2, basisBlack2x2, n);
         } else if (k == 2 && n == 3) {
-            generateShares(basisWhite2x3, basisBlack2x3);
+            generateShares(basisWhite2x3, basisBlack2x3, n);
         } else if (k == 2 && n == 4) {
-            generateShares(basisWhite2x4, basisBlack2x4);
+            generateShares(basisWhite2x4, basisBlack2x4, n);
         } else if (k == 3 && n == 3) {
-            generateShares(basisWhite3x3, basisBlack3x3);
+            generateShares(basisWhite3x3, basisBlack3x3, n);
         } else if (k == 3 && n == 4) {
-            generateShareAfterPreProcessing(basisWhite3x4, basisBlack3x4);
-
+//            generateShareAfterPreProcessing(basisWhite3x4, basisBlack3x4);
+            generateShares(basisWhite2x3, basisBlack2x3, n);
         } else if (k == 4 && n == 4) {
-
-            generateShareAfterPreProcessing(basisWhite4x4, basisBlack4x4);
+//            generateShareAfterPreProcessing(basisWhite4x4, basisBlack4x4);
+            generateShares(basisWhite2x3, basisBlack2x3, n);
+        } else if(n > 4) {
+            generateShares(basisWhite2x3, basisBlack2x3, n);
         }
         return true;
     }
@@ -685,8 +738,6 @@ public class ImageProcessing {
 
 
     public ArrayList<BufferedImage> generateKoutOfNShares_direct(int k, int n) {
-
-        System.out.println("k:" + k + "  n:" + n);
         if (k == 2 && n == 2) {
             generateShares_direct(basisWhite2x2, basisBlack2x2);
         } else if (k == 2 && n == 3) {
@@ -695,8 +746,13 @@ public class ImageProcessing {
             generateShares_direct(basisWhite2x4, basisBlack2x4);
         } else if (k == 3 && n == 3) {
             generateShares_direct(basisWhite3x3, basisBlack3x3);
+        } else if (k == 3 && n == 4) {
+            generateShares_direct(basisWhite3x4, basisBlack3x4);
+        } else if (k == 4 && n == 4) {
+            generateShares_direct(basisWhite4x4, basisBlack4x4);
+        } else if(n > 4) {
+            generateShares_direct(basisWhite2x3, basisBlack2x3);
         }
-        System.out.println("size: " + shares.size());
         return shares;
     }
 
