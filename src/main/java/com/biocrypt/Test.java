@@ -14,12 +14,15 @@ public class Test {
 
         FingerprintTemplate probe = new FingerprintTemplate(
                 new FingerprintImage()
-                        .dpi(150)
+                        .dpi(125)
                         .decode(probeImage));
+
+        byte[] serialized = probe.toByteArray();
+        System.out.println();
 
         FingerprintTemplate candidate = new FingerprintTemplate(
                 new FingerprintImage()
-                        .dpi(150)
+                        .dpi(125)
                         .decode(candidateImage));
 
         double score = new FingerprintMatcher()
@@ -33,8 +36,8 @@ public class Test {
     }
 
     public static void main(String[] args) throws Exception {
-        String path1 = "";
-        String path2 = "";
+        String path1 = "src/main/resources/input/input_abhi.png";
+        String path2 = "src/main/resources/input/input_abhi.png";
 
         Test test = new Test();
         boolean match = test.getMatch(path1, path2);

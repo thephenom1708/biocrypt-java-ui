@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,27 @@ public class Utility {
             return new ArrayList<>();
         }
         return shares;
+    }
+
+    public static BufferedImage getCroppedImageFromRemoteCoordinates(BufferedImage img, String username, int n) {
+        String url = Url.GET_COORDINATES_URL;
+        String param = "username=" + username;
+        String response = "";
+        HttpSendData send1 = new HttpSendData(url, param);
+        try {
+            response = send1.sendPOST();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String[] coordinates = response.split(",");
+        int sx, sy, ex, ey;
+        sx = Integer.parseInt(coordinates[0]);
+        sy = Integer.parseInt(coordinates[1]);
+        ex = Integer.parseInt(coordinates[2]);
+        ey = Integer.parseInt(coordinates[3]);
+
+        VC newVc = new VC(sx, sy, ex, ey, n, img, username);
+        return newVc.getOutputImg();
     }
 
     public static BufferedImage getMergedImageFromShares(List<BufferedImage> shares) {

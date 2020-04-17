@@ -12,9 +12,9 @@ public class Url {
     public static final String REST_SERVER_IP = "192.168.43.86";
     public static final String PORT = "8080";
     public static final List<String> nodes = List.of(
+            "192.168.43.86",
             "192.168.43.216",
-            "192.168.43.188",
-            "192.168.43.86"
+            "192.168.43.188"
     );
 
     public static final String CREATE_SHARE_URL = "/apitest/testing/";

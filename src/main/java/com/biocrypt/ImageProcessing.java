@@ -403,12 +403,12 @@ public class ImageProcessing {
             int shareIndex;
             for (int i = 0; i < n; i++) {
 
-                if(i >= nodeCount && i % nodeCount == 0)
+                if(i >= nodeCount && i % shares.size() == 0)
                     shareIndex = 1;
                 else
-                    shareIndex = i % nodeCount;
+                    shareIndex = i % shares.size();
 
-
+//                System.out.println("Share: " + shareIndex);
                 String fileName = Url.SHARE_PATH + "share" + (i + 1) + ".png";
                 ImageIO.write(shares.get(shareIndex), "PNG", new File(fileName));
 

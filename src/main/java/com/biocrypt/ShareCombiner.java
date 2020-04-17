@@ -149,24 +149,7 @@ public class ShareCombiner extends JFrame {
                 File file = chooser.getSelectedFile();
                 BufferedImage img = ImageIO.read(file);
 
-                String url = Url.GET_COORDINATES_URL;
-                String param = "username=" + username;
-                String response = "";
-                HttpSendData send1 = new HttpSendData(url, param);
-                try {
-                    response = send1.sendPOST();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                String[] coordinates = response.split(",");
-                int sx, sy, ex, ey;
-                sx = Integer.parseInt(coordinates[0]);
-                sy = Integer.parseInt(coordinates[1]);
-                ex = Integer.parseInt(coordinates[2]);
-                ey = Integer.parseInt(coordinates[3]);
-
-                VC newVc = new VC(sx, sy, ex, ey, n, img, username);
-                BufferedImage currOutputImg = newVc.getOutputImg();
+                BufferedImage currOutputImg = Utility.getCroppedImageFromRemoteCoordinates(img, username, n);
 
                 String filePath = Url.CURRENT_OUTPUT_PATH + "output_" + username_field.getText() + ".png";
                 ImageIO.write(currOutputImg, "PNG", new File(filePath));
@@ -195,46 +178,9 @@ public class ShareCombiner extends JFrame {
                 } else {
                     try {
                         ArrayList<BufferedImage> shares = new ArrayList<>();
-                        for (File f : files) {
-                            shares.add(ImageIO.read(f));
+                        for (File file : files) {
+                            shares.add(ImageIO.read(file));
                         }
-
-//                        int max = 0;
-//                        boolean flag = false;
-//                        for (int i = 1; i < shares.size(); i++) {
-//                            if (shares.get(i).getHeight() > shares.get(max).getHeight()) {
-//                                max = i;
-//                            } else if (shares.get(i).getHeight() == shares.get(max).getHeight()) {
-//                                flag = true;
-//                            }
-//                        }
-//
-//
-//                        int startX = shares.get(max).getRGB(0, 0);
-//                        int startY = shares.get(max).getRGB(shares.get(max).getWidth() - 1, 0);
-//
-//                        if (flag) {
-//                            startX = 0;
-//                            startY = 0;
-//                        }
-//                        int k = 0;
-//                        if (max == 0) {
-//                            k = 1;
-//                        }
-//
-//                        for (int i = 0; i < shares.get(k).getHeight(); i++) {
-//                            for (int j = 0; j < shares.get(k).getWidth(); j++) {
-//                                int temp = 0;
-//                                for (int p = 0; p < shares.size(); p++) {
-//                                    if (p == max) {
-//                                        temp = temp | shares.get(p).getRGB(startX + j, startY + i);
-//                                    } else {
-//                                        temp = temp | shares.get(p).getRGB(j, i);
-//                                    }
-//                                }
-//                                shares.get(max).setRGB(startX + j, startY + i, temp);
-//                            }
-//                        }
 
                         BufferedImage mergedImage = Utility.getMergedImageFromShares(shares);
 
@@ -250,6 +196,7 @@ public class ShareCombiner extends JFrame {
                         } else {
                             JOptionPane.showMessageDialog(this, "Shares decrypted successfully. Authentication FAILED !!! ", "Success", 1);
                         }
+
                         choosenFile.setText(choosenFile.getText() + "\nOutput file output.png generated successfully.");
                         OutputImage outImage = new OutputImage(mergedImage);
                         outImage.setVisible(true);
