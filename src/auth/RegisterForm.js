@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
 import { TextField } from '@material-ui/core'
 import Spinner from '../utils/components/Spinner';
+import AuthAPI from '../api/AuthAPI';
+import { useToasts } from 'react-toast-notifications';
 
-export default function RegisterForm() {
+export default function RegisterForm({ incrementStepper }) {
+    const { addToast } = useToasts();
+
     const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [pin, setPin] = useState("");
@@ -18,6 +22,15 @@ export default function RegisterForm() {
 
     const submitHandler = (event) => {
         event.preventDefault();
+        setLoading(true);
+        AuthAPI.register(name, username, pin).then(response => {
+            reset();
+            incrementStepper();
+            addToast("Registration Successful", { appearance: 'success' });
+        }, err => {
+            setErrors(err.errors);
+            addToast("Something went wrong! Please try again!", { appearance: 'error' })
+        }).then(setLoading(false));
     }
 
     return (

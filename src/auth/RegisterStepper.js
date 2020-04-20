@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { Stepper, Step, StepLabel, StepContent, Button } from '@material-ui/core';
-import LoginForm from './LoginForm';
 import UploadFingerprintForm from './UploadFingerprintForm';
 import Modal from '../utils/components/Modal';
+import RegisterForm from './RegisterForm';
 
-export default function AuthStepper() {
-    const steps = ['User Credentials', 'Verify User', 'Upload Fingerprint'];
+export default function RegisterStepper() {
+    const steps = ['Register New User', 'Upload Fingerprint'];
     const [activeStep, setActiveStep] = useState(0);
+
     
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -19,16 +20,13 @@ export default function AuthStepper() {
     const handleReset = () => {
         setActiveStep(0);
     };
-    
+
     const getStepContent = (step) => {
         switch (step) {
             case 0:
-                return <LoginForm />
+                return <RegisterForm incrementStepper={handleNext}/>
 
             case 1:
-                return "Result of verification";
-
-            case 2:
                 return (
                     <React.Fragment>
                         <Modal id={"upload-fingerprint-modal"}

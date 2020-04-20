@@ -1,6 +1,6 @@
 import React from 'react'
-import RegisterForm from '../../auth/RegisterForm'
 import AuthStepper from '../../auth/AuthStepper'
+import RegisterStepper from '../../auth/RegisterStepper'
 import { Card, CardContent } from '@material-ui/core'
 
 export default function Home() {
@@ -23,7 +23,7 @@ export default function Home() {
                 <CardContent>
                     <div className="tab-content">
                         <div id="menu1" className="container tab-pane active"><br />
-                                    <RegisterForm />
+                            <RegisterStepper />
                         </div>
                         <div id="menu2" className="container tab-pane fade"><br />
                             <AuthStepper />

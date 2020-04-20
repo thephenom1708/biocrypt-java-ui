@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { TextField } from '@material-ui/core'
 import Spinner from '../utils/components/Spinner';
+import AuthAPI from '../api/AuthAPI';
 
 export default function LoginForm() {
     const [username, setUsername] = useState("");
@@ -16,6 +17,12 @@ export default function LoginForm() {
 
     const submitHandler = (event) => {
         event.preventDefault();
+        setLoading(true);
+        AuthAPI.login(username, pin).then(response => {
+            reset();
+        }, err => {
+            setErrors(err.errors);
+        }).then(setLoading(false));
     }
 
 
