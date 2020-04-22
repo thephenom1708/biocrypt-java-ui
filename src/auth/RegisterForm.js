@@ -3,9 +3,12 @@ import { TextField } from '@material-ui/core'
 import Spinner from '../utils/components/Spinner';
 import AuthAPI from '../api/AuthAPI';
 import { useToasts } from 'react-toast-notifications';
+import { useDispatch } from 'react-redux';
+import { setUser } from './Auth.action';
 
 export default function RegisterForm({ incrementStepper }) {
     const { addToast } = useToasts();
+    const dispatch = useDispatch();
 
     const [name, setName] = useState("");
     const [username, setUsername] = useState("");
@@ -24,6 +27,7 @@ export default function RegisterForm({ incrementStepper }) {
         event.preventDefault();
         setLoading(true);
         AuthAPI.register(name, username, pin).then(response => {
+            dispatch(setUser(response.user));
             reset();
             incrementStepper();
             addToast("Registration Successful", { appearance: 'success' });

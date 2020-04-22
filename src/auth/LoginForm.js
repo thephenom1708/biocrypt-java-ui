@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { TextField } from '@material-ui/core'
 import Spinner from '../utils/components/Spinner';
 import AuthAPI from '../api/AuthAPI';
+import { useDispatch } from 'react-redux';
 
 export default function LoginForm() {
     const [username, setUsername] = useState("");

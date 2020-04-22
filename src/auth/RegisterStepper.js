@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Stepper, Step, StepLabel, StepContent, Button } from '@material-ui/core';
-import UploadFingerprintForm from './UploadFingerprintForm';
 import Modal from '../utils/components/Modal';
 import RegisterForm from './RegisterForm';
+import RegisterFingerprintsForm from './RegisterFingerprintsForm';
 
 export default function RegisterStepper() {
     const steps = ['Register New User', 'Upload Fingerprint'];
@@ -29,15 +29,15 @@ export default function RegisterStepper() {
             case 1:
                 return (
                     <React.Fragment>
-                        <Modal id={"upload-fingerprint-modal"}
-                            modalTitle={"Upload Fingerprint"}
-                            modalContent={<UploadFingerprintForm />}
+                        <Modal id={"register-fingerprints-modal"}
+                            modalTitle={"Register Fingerprints"}
+                            modalContent={<RegisterFingerprintsForm />}
                             modalLarge={true}
                         />
 
                         <Button variant="outlined" color="secondary"
-                            data-toggle="modal" data-target="#upload-fingerprint-modal">
-                            Upload Fingerprint
+                            data-toggle="modal" data-target="#register-fingerprints-modal">
+                            Register Fingerprints
                         </Button>
                     </React.Fragment>
                 );
