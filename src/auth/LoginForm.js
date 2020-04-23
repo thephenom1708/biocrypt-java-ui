@@ -3,8 +3,13 @@ import { TextField } from '@material-ui/core'
 import Spinner from '../utils/components/Spinner';
 import AuthAPI from '../api/AuthAPI';
 import { useDispatch } from 'react-redux';
+import { getRegisteredFingerprints } from '../biocrypt/App.action';
+import { useToasts } from 'react-toast-notifications';
 
-export default function LoginForm() {
+export default function LoginForm({ incrementStepper }) {
+    const { addToast } = useToasts();
+    const dispatch = useDispatch();
+    
     const [username, setUsername] = useState("");
     const [pin, setPin] = useState("");
     const [errors, setErrors] = useState({});
@@ -21,8 +26,12 @@ export default function LoginForm() {
         setLoading(true);
         AuthAPI.login(username, pin).then(response => {
             reset();
+            dispatch(getRegisteredFingerprints(response.user.id));
+            incrementStepper();
+            addToast("Credentials Verified!", { appearance: 'success' });
         }, err => {
             setErrors(err.errors);
+            addToast("Something went wrong! Please try again!", { appearance: 'error' });
         }).then(setLoading(false));
     }
 

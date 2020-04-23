@@ -6,7 +6,7 @@ import Modal from '../utils/components/Modal';
 
 export default function AuthStepper() {
     const steps = ['User Credentials', 'Verify User', 'Upload Fingerprint'];
-    const [activeStep, setActiveStep] = useState(0);
+    const [activeStep, setActiveStep] = useState(2);
     
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -23,7 +23,7 @@ export default function AuthStepper() {
     const getStepContent = (step) => {
         switch (step) {
             case 0:
-                return <LoginForm />
+                return <LoginForm incrementStepper={handleNext}/>
 
             case 1:
                 return "Result of verification";

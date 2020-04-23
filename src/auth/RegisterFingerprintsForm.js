@@ -12,6 +12,7 @@ import { useToasts } from 'react-toast-notifications';
 export default function RegisterFingerprintsForm() {
     const { addToast } = useToasts();
     const user = useSelector(state => state.auth.user);
+    
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isLoading, setLoading] = useState(false);
 
@@ -38,7 +39,7 @@ export default function RegisterFingerprintsForm() {
     }
 
     return (
-        <Form>{JSON.stringify(user)}
+        <Form>
             <FileBase64
                 multiple={true} 
                 onDone={fileChangeHandler}

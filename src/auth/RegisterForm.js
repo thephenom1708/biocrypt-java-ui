@@ -33,7 +33,7 @@ export default function RegisterForm({ incrementStepper }) {
             addToast("Registration Successful", { appearance: 'success' });
         }, err => {
             setErrors(err.errors);
-            addToast("Something went wrong! Please try again!", { appearance: 'error' })
+            addToast("Something went wrong! Please try again!", { appearance: 'error' });
         }).then(setLoading(false));
     }
 
