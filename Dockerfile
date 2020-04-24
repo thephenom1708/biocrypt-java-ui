@@ -4,7 +4,7 @@ RUN mkdir /app
 RUN mkdir /app/ui
 WORKDIR /app/ui
 
-COPY ./package.json /usr/src/app/ui/
+COPY ./package.json /app/ui/
 RUN npm install
 
 COPY . /app/ui/
