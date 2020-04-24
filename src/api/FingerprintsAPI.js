@@ -18,8 +18,16 @@ const FingerprintsAPI = {
 
     verifyFingerprints: (testFingerprint, registeredFingerprints) => {
         const data = {
-            testFingerprintBase64: testFingerprint,
-            registeredFingerprints: registeredFingerprints
+            testFingerprintBase64: {
+                id: "0",
+                base64: testFingerprint
+            },
+            registeredFingerprints: registeredFingerprints.map((fingerprint, index) => {
+                return {
+                    id: index,
+                    base64: fingerprint
+                }
+            })
         }
         const url = "/fingerprints/verify/";
         return callPostApi(url, data, API_TYPE.CORE);

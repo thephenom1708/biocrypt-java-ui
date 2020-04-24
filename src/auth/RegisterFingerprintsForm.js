@@ -8,6 +8,7 @@ import FingerprintsAPI from '../api/FingerprintsAPI';
 import { useSelector } from 'react-redux';
 import Spinner from '../utils/components/Spinner';
 import { useToasts } from 'react-toast-notifications';
+import FingerprintIcon from '@material-ui/icons/Fingerprint';
 
 export default function RegisterFingerprintsForm() {
     const { addToast } = useToasts();
@@ -26,7 +27,7 @@ export default function RegisterFingerprintsForm() {
 
         const fingerprints = selectedFiles.map((file, index) => {
             return {
-                id: index, 
+                id: index + 1, 
                 base64: file.base64.split(",")[1]
             }
         });
@@ -75,8 +76,10 @@ export default function RegisterFingerprintsForm() {
             <br />
             <div className="row">
                 <div className="col-sm-2 offset-10">
-                    <Button variant="contained" color="primary" onClick={submitHandler}>
-                        {isLoading? <Spinner /> : null }Upload
+                    <Button variant="contained" color="primary"
+                        startIcon={isLoading? <Spinner /> : <FingerprintIcon /> } 
+                        onClick={submitHandler}>
+                        Upload
                     </Button>
                 </div>
             </div>

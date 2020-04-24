@@ -8,6 +8,8 @@ import { useToasts } from 'react-toast-notifications';
 import { useSelector } from 'react-redux';
 import FingerprintsAPI from '../api/FingerprintsAPI';
 import Spinner from '../utils/components/Spinner';
+import { successAlert, errorAlert } from '../utils/Utils';
+import FingerprintIcon from '@material-ui/icons/Fingerprint';
 
 export default function UploadFingerprintForm() {
     const { addToast } = useToasts();
@@ -24,13 +26,15 @@ export default function UploadFingerprintForm() {
         event.preventDefault();
         setLoading(true);
 
-        const testFingerprint = {
-            id: 0,
-            base64: selectedFile.base64.split(",")[1]
-        }
+        const testFingerprint = selectedFile.base64.split(",")[1]
 
         FingerprintsAPI.verifyFingerprints(testFingerprint, registeredFingerprints).then(response => {
-            addToast(response.message, { appearance: "success" });
+            if(response.success) {
+                successAlert("Success", "Authentication Successful!");
+            }
+            else {
+                errorAlert("Oops!", "Authentication Failed! Please Try again!");
+            }
         }, () => {
             addToast("Something went wrong! Please Try again!", { appearance: 'error' });
         }).then(setLoading(false));
@@ -62,8 +66,10 @@ export default function UploadFingerprintForm() {
             <br />
             <div className="row">
                 <div className="col-sm-2 offset-10">
-                    <Button variant="contained" color="primary" onClick={submitHandler}>
-                        {isLoading? <Spinner /> : null }Upload
+                    <Button variant="contained" color="primary"
+                        startIcon={isLoading? <Spinner /> : <FingerprintIcon /> } 
+                        onClick={submitHandler}>
+                        Upload
                     </Button>
                 </div>
             </div>

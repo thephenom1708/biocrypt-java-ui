@@ -5,19 +5,11 @@ import UploadFingerprintForm from './UploadFingerprintForm';
 import Modal from '../utils/components/Modal';
 
 export default function AuthStepper() {
-    const steps = ['User Credentials', 'Verify User', 'Upload Fingerprint'];
-    const [activeStep, setActiveStep] = useState(2);
+    const steps = ['Verify Credentials', 'Authenticate Fingerprint'];
+    const [activeStep, setActiveStep] = useState(0);
     
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
-    
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-    
-    const handleReset = () => {
-        setActiveStep(0);
     };
     
     const getStepContent = (step) => {
@@ -26,9 +18,6 @@ export default function AuthStepper() {
                 return <LoginForm incrementStepper={handleNext}/>
 
             case 1:
-                return "Result of verification";
-
-            case 2:
                 return (
                     <React.Fragment>
                         <Modal id={"upload-fingerprint-modal"}

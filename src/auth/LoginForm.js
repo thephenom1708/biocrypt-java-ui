@@ -31,7 +31,6 @@ export default function LoginForm({ incrementStepper }) {
             addToast("Credentials Verified!", { appearance: 'success' });
         }, err => {
             setErrors(err.errors);
-            addToast("Something went wrong! Please try again!", { appearance: 'error' });
         }).then(setLoading(false));
     }
 
